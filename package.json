@@ -1,0 +1,15 @@
+{
+  "name": "Travel Agent",
+  "description": "Plan your trip",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "openai": "4.19.1",
+    "vite": "latest"
+  },
+  "devDependencies": {}
+}
