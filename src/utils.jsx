@@ -6,14 +6,13 @@ const getWeather = () => {
         (position) => {
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
+          const apikey = "965a5be4709e223e8472575318a25db7";
           console.log(`Latitude: ${lat}, Longitude: ${lon}`);
         },
         (err) => setError("Location access denied")
       );
       fetch(
-        `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${
-          import.meta.env.VITE_WEATHER_API_KEY
-        }&units=metric`
+        `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${apikey}&units=metric`
       )
         .then((response) => {
           response.json();
