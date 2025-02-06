@@ -1,38 +1,21 @@
-import OpenAI from "openai";
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { createHashRouter, RouterProvider, Outlet } from "react-router-dom";
-import Input from "./src/Input";
-import Output from "./src/Output";
-import Home from "./src/Home";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from './src/Home';
+import Input from './src/Input';
+import Output from './src/Output';
+import Layout from './src/Layout';
 
-const Index = () => {
-  return (
-    <div>
-      <Outlet />
-    </div>
-  );
-};
-const appRouter = createHashRouter([
-  {
-    path: "/",
-    element: <Index />,
-    children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/input",
-        element: <Input />,
-      },
-      {
-        path: "/output",
-        element: <Output />,
-      },
-    ],
-  },
-]);
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<RouterProvider router={appRouter} />);
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/input" element={<Input />} />
+          <Route path="/output" element={<Output />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
+  </React.StrictMode>
+);
