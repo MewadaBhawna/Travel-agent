@@ -5,19 +5,18 @@ import Alert from "./Alert";
 const Input = () => {
   // Get today's date in YYYY-MM-DD format
   const today = new Date().toISOString().split("T")[0];
-
-  const navigate = useNavigate();
+  const [showAlert, setShowAlert] = useState(false);
+  const [errorFields, setErrorFields] = useState([]);
   const [formData, setFormData] = useState({
     travelers: 1,
     flyingFrom: "",
     flyingTo: "",
-    fromDate: today, // Set default value to today
+    fromDate: today,
     toDate: "",
     budget: "",
     currency: "NOK",
   });
-  const [showAlert, setShowAlert] = useState(false);
-  const [errorFields, setErrorFields] = useState([]);
+  const navigate = useNavigate();
 
   const handleTravelersChange = (action) => {
     setFormData((prev) => ({
@@ -61,7 +60,8 @@ const Input = () => {
       // Auto-hide alert after 5 seconds
       setTimeout(() => setShowAlert(false), 5000);
     } else {
-      navigate("/output");
+      // open api tool call
+      navigate("/output", { state: { formData } });
     }
   };
 
