@@ -1,23 +1,30 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Alert from "./Alert";
+import { content, tools } from "./utils";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  dangerouslyAllowBrowser: true,
+  apiKey: "",
+});
 
 const Input = () => {
   // Get today's date in YYYY-MM-DD format
   const today = new Date().toISOString().split("T")[0];
-
-  const navigate = useNavigate();
+  const [showAlert, setShowAlert] = useState(false);
+  const [errorFields, setErrorFields] = useState([]);
   const [formData, setFormData] = useState({
     travelers: 1,
     flyingFrom: "",
     flyingTo: "",
-    fromDate: today, // Set default value to today
+    fromDate: "",
     toDate: "",
     budget: "",
     currency: "NOK",
   });
-  const [showAlert, setShowAlert] = useState(false);
-  const [errorFields, setErrorFields] = useState([]);
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTravelersChange = (action) => {
     setFormData((prev) => ({
@@ -47,10 +54,9 @@ const Input = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check which fields are empty
     const emptyFields = Object.entries(formData)
       .filter(([key, value]) => value === "")
       .map(([key]) => key);
@@ -58,10 +64,33 @@ const Input = () => {
     if (emptyFields.length > 0) {
       setErrorFields(emptyFields);
       setShowAlert(true);
-      // Auto-hide alert after 5 seconds
       setTimeout(() => setShowAlert(false), 5000);
     } else {
-      navigate("/output");
+      setIsLoading(true);
+      try {
+        const messages = [
+          { role: "system", content },
+          { role: "user", content: `User input: ${JSON.stringify(formData)}` },
+        ];
+        const runner = openai.beta.chat.completions.runTools({
+          model: "gpt-4-turbo-2024-04-09",
+          messages: messages,
+          tools,
+        });
+
+        const finalContent = await runner.finalContent();
+        console.log(finalContent);
+
+        navigate("/output", {
+          state: { formData, finalContent: JSON.parse(finalContent) },
+        });
+      } catch (error) {
+        console.error("Error:", error);
+        setShowAlert(true);
+        setErrorFields(["An error occurred. Please try again."]);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -77,6 +106,38 @@ const Input = () => {
 
   return (
     <div className="input-container">
+      {isLoading && (
+        <div className="full-page-loader">
+          <div className="loader-icons">
+            <span className="loader-icon">✈️</span>
+            <span
+              className="loader-icon"
+              style={{ left: "25%", animationDelay: "0.5s" }}
+            >
+              🌍
+            </span>
+            <span
+              className="loader-icon"
+              style={{ left: "50%", animationDelay: "1s" }}
+            >
+              🏖️
+            </span>
+            <span
+              className="loader-icon"
+              style={{ left: "75%", animationDelay: "1.5s" }}
+            >
+              🗺️
+            </span>
+          </div>
+          <div className="loader-content">
+            <div className="loader-spinner"></div>
+            <div className="loader-text">Planning Your Adventure</div>
+            <div className="loader-subtext">
+              Crafting the perfect itinerary for you...
+            </div>
+          </div>
+        </div>
+      )}
       {showAlert && (
         <Alert
           message={
@@ -197,8 +258,15 @@ const Input = () => {
           </div>
         </div>
 
-        <button type="submit" className="submit-btn">
-          Plan My Trip !
+        <button type="submit" className="submit-btn" disabled={isLoading}>
+          {isLoading ? (
+            <div className="loader-container">
+              <div className="loader"></div>
+              <span>Planning...</span>
+            </div>
+          ) : (
+            "Plan My Trip !"
+          )}
         </button>
       </form>
     </div>
