@@ -13,42 +13,56 @@ const Output = (props) => {
   // Redirect to home if no data
   React.useEffect(() => {
     if (!formData || !finalContent) {
-      navigate('/');
+      navigate("/");
     }
   }, [formData, finalContent, navigate]);
 
   const shareData = {
-    title: 'My Travel Itinerary',
+    title: "My Travel Itinerary",
     text: `Check out my travel plan from ${formData?.flyingFrom} to ${formData?.flyingTo}!`,
-    url: window.location.href
+    url: window.location.href,
   };
 
   const handleShare = async (platform) => {
     try {
       switch (platform) {
-        case 'native':
+        case "native":
           if (navigator.share) {
             await navigator.share(shareData);
           }
           break;
-        case 'whatsapp':
-          window.open(`https://wa.me/?text=${encodeURIComponent(`${shareData.text} ${shareData.url}`)}`);
+        case "whatsapp":
+          window.open(
+            `https://wa.me/?text=${encodeURIComponent(
+              `${shareData.text} ${shareData.url}`
+            )}`
+          );
           break;
-        case 'twitter':
-          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${shareData.text} ${shareData.url}`)}`);
+        case "twitter":
+          window.open(
+            `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+              `${shareData.text} ${shareData.url}`
+            )}`
+          );
           break;
-        case 'facebook':
-          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`);
+        case "facebook":
+          window.open(
+            `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+              shareData.url
+            )}`
+          );
           break;
-        case 'copy':
-          await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-          alert('Link copied to clipboard!');
+        case "copy":
+          await navigator.clipboard.writeText(
+            `${shareData.text} ${shareData.url}`
+          );
+          alert("Link copied to clipboard!");
           break;
         default:
           break;
       }
     } catch (error) {
-      console.error('Error sharing:', error);
+      console.error("Error sharing:", error);
     }
   };
 
@@ -59,11 +73,22 @@ const Output = (props) => {
     setTimeout(() => setShowAlert(false), 5000);
   };
 
-  if (!formData || !finalContent) return null;
+  // In a real application, you would pass the form data through state or context
+  // For now, we'll use placeholder data similar to the input structure
+  const formData = {
+    fromDate: "2024-03-20",
+    toDate: "2024-03-27",
+    flyingFrom: "New York",
+    flyingTo: "Paris",
+    travelers: 2,
+    budget: 5000,
+    currency: "USD",
+  };
 
   return (
     <div className="input-container">
       {showAlert && (
+        <Alert
         <Alert
           message={alertMessage}
           onClose={() => setShowAlert(false)}
@@ -72,6 +97,7 @@ const Output = (props) => {
       )}
       <div className="centered-form">
         {/* Main Title */}
+        <h1 className="trip-title">Your Trip</h1>
         <h1 className="trip-title">Your Trip</h1>
 
         {/* Date Section */}
@@ -94,6 +120,14 @@ const Output = (props) => {
         <div className="form-group">
           <label className="bold-label">Weather Forecast</label>
           <div className="input-field display-field">
+            <p>
+              <strong>{formData.flyingFrom}:</strong> 18°C (64°F) - Partly
+              cloudy
+            </p>
+            <p>
+              <strong>{formData.flyingTo}:</strong> 22°C (72°F) - Sunny with
+              clear skies
+            </p>
             <p>{finalContent.weather}</p>
           </div>
         </div>
@@ -101,6 +135,24 @@ const Output = (props) => {
         {/* Flights Section */}
         <div className="form-group">
           <label className="bold-label">Flights</label>
+          <div className="input-field display-field flex-between">
+            <div>
+              <p>
+                <strong>Outbound:</strong> {formData.flyingFrom} →{" "}
+                {formData.flyingTo}
+              </p>
+              <p className="text-muted">Duration: 7h 30m • Direct Flight</p>
+            </div>
+            <button
+              className="submit-btn book-now-btn"
+              onClick={() =>
+                handleShowAlert(
+                  "🎉 Hurrah! Your flight has been booked successfully!"
+                )
+              }
+            >
+              Book Now
+            </button>
           <div className="input-field display-field">
             {finalContent.flights.map((flight, index) => (
               <div key={index} className="flight-card">
@@ -150,6 +202,22 @@ const Output = (props) => {
         {/* Hotels Section */}
         <div className="form-group">
           <label className="bold-label">Hotels</label>
+          <div className="input-field display-field flex-between">
+            <div>
+              <p>
+                <strong>Recommended Hotels in {formData.flyingTo}</strong>
+              </p>
+              <p className="text-muted">5 hotels matching your criteria</p>
+            </div>
+            <button
+              className="submit-btn book-now-btn"
+              onClick={() =>
+                handleShowAlert(
+                  "🎉 Hurrah! Your hotel has been booked successfully!"
+                )
+              }
+            >
+              Book Now
           <div className="input-field display-field">
             {finalContent.hotels.map((hotel, index) => (
               <div key={index} className="hotel-card">
