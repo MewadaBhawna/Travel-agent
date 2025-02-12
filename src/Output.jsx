@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Alert from "./Alert";
-import { FaShare, FaWhatsapp, FaTwitter, FaFacebook, FaCopy } from 'react-icons/fa';
+import {
+  FaShare,
+  FaWhatsapp,
+  FaTwitter,
+  FaFacebook,
+  FaCopy,
+} from "react-icons/fa";
 
-const Output = (props) => {
+const Output = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const location = useLocation();
@@ -73,22 +79,9 @@ const Output = (props) => {
     setTimeout(() => setShowAlert(false), 5000);
   };
 
-  // In a real application, you would pass the form data through state or context
-  // For now, we'll use placeholder data similar to the input structure
-  const formData = {
-    fromDate: "2024-03-20",
-    toDate: "2024-03-27",
-    flyingFrom: "New York",
-    flyingTo: "Paris",
-    travelers: 2,
-    budget: 5000,
-    currency: "USD",
-  };
-
   return (
     <div className="input-container">
       {showAlert && (
-        <Alert
         <Alert
           message={alertMessage}
           onClose={() => setShowAlert(false)}
@@ -97,7 +90,6 @@ const Output = (props) => {
       )}
       <div className="centered-form">
         {/* Main Title */}
-        <h1 className="trip-title">Your Trip</h1>
         <h1 className="trip-title">Your Trip</h1>
 
         {/* Date Section */}
@@ -120,14 +112,6 @@ const Output = (props) => {
         <div className="form-group">
           <label className="bold-label">Weather Forecast</label>
           <div className="input-field display-field">
-            <p>
-              <strong>{formData.flyingFrom}:</strong> 18°C (64°F) - Partly
-              cloudy
-            </p>
-            <p>
-              <strong>{formData.flyingTo}:</strong> 22°C (72°F) - Sunny with
-              clear skies
-            </p>
             <p>{finalContent.weather}</p>
           </div>
         </div>
@@ -135,24 +119,6 @@ const Output = (props) => {
         {/* Flights Section */}
         <div className="form-group">
           <label className="bold-label">Flights</label>
-          <div className="input-field display-field flex-between">
-            <div>
-              <p>
-                <strong>Outbound:</strong> {formData.flyingFrom} →{" "}
-                {formData.flyingTo}
-              </p>
-              <p className="text-muted">Duration: 7h 30m • Direct Flight</p>
-            </div>
-            <button
-              className="submit-btn book-now-btn"
-              onClick={() =>
-                handleShowAlert(
-                  "🎉 Hurrah! Your flight has been booked successfully!"
-                )
-              }
-            >
-              Book Now
-            </button>
           <div className="input-field display-field">
             {finalContent.flights.map((flight, index) => (
               <div key={index} className="flight-card">
@@ -160,7 +126,9 @@ const Output = (props) => {
                   <div className="airline-info">
                     <i className="fas fa-plane"></i>
                     <span className="airline-name">{flight.airline}</span>
-                    <span className="flight-number">#{flight.flightNumber}</span>
+                    <span className="flight-number">
+                      #{flight.flightNumber}
+                    </span>
                   </div>
                   <div className="flight-price">${flight.price}</div>
                 </div>
@@ -202,22 +170,6 @@ const Output = (props) => {
         {/* Hotels Section */}
         <div className="form-group">
           <label className="bold-label">Hotels</label>
-          <div className="input-field display-field flex-between">
-            <div>
-              <p>
-                <strong>Recommended Hotels in {formData.flyingTo}</strong>
-              </p>
-              <p className="text-muted">5 hotels matching your criteria</p>
-            </div>
-            <button
-              className="submit-btn book-now-btn"
-              onClick={() =>
-                handleShowAlert(
-                  "🎉 Hurrah! Your hotel has been booked successfully!"
-                )
-              }
-            >
-              Book Now
           <div className="input-field display-field">
             {finalContent.hotels.map((hotel, index) => (
               <div key={index} className="hotel-card">
@@ -226,7 +178,10 @@ const Output = (props) => {
                     <i className="fas fa-hotel"></i>
                     <span className="hotel-name">{hotel.name}</span>
                   </div>
-                  <div className="hotel-price">${hotel.price}<span>/night</span></div>
+                  <div className="hotel-price">
+                    ${hotel.price}
+                    <span>/night</span>
+                  </div>
                 </div>
                 <div className="hotel-details">
                   <div className="location">
@@ -282,20 +237,35 @@ const Output = (props) => {
           <h3>Share Your Itinerary</h3>
           <div className="share-buttons">
             {navigator.share && (
-              <button onClick={() => handleShare('native')} className="share-btn">
+              <button
+                onClick={() => handleShare("native")}
+                className="share-btn"
+              >
                 <FaShare /> Share
               </button>
             )}
-            <button onClick={() => handleShare('whatsapp')} className="share-btn whatsapp">
+            <button
+              onClick={() => handleShare("whatsapp")}
+              className="share-btn whatsapp"
+            >
               <FaWhatsapp /> WhatsApp
             </button>
-            <button onClick={() => handleShare('twitter')} className="share-btn twitter">
+            <button
+              onClick={() => handleShare("twitter")}
+              className="share-btn twitter"
+            >
               <FaTwitter /> Twitter
             </button>
-            <button onClick={() => handleShare('facebook')} className="share-btn facebook">
+            <button
+              onClick={() => handleShare("facebook")}
+              className="share-btn facebook"
+            >
               <FaFacebook /> Facebook
             </button>
-            <button onClick={() => handleShare('copy')} className="share-btn copy">
+            <button
+              onClick={() => handleShare("copy")}
+              className="share-btn copy"
+            >
               <FaCopy /> Copy Link
             </button>
           </div>
